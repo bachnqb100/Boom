@@ -2,6 +2,12 @@ using UnityEngine;
 
 public class ItemPickup : MonoBehaviour
 {
+    private AudioSource audioSource;
+
+    private void Awake()
+    {
+        audioSource = GetComponent<AudioSource>();
+    }
     public enum Item
     {
         ExtraBomb, 
@@ -31,15 +37,16 @@ public class ItemPickup : MonoBehaviour
             case Item.BlastRadius:
                 player.GetComponent<BombController>().explosionRadius++;
                 break;
+                
         }
-
-        Destroy(gameObject);
+        Destroy(gameObject, 0.1f);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player") || other.CompareTag("Enemy"))
         {
+            audioSource.enabled = true;
             OnItemPickup(other.gameObject);
         }
     }

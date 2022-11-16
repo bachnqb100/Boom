@@ -22,6 +22,17 @@ public class BombController : MonoBehaviour
     public Tilemap destructibleTiles;
     public Destructible destructiblePrefab;
 
+    [Header("Audio")]
+    private AudioSource audioPlayer;
+    public AudioClip audioPlaceBomb;
+    public AudioClip audioPickItem;
+    public AudioClip audioDestroy;
+
+    private void Awake()
+    {
+        audioPlayer = GetComponent<AudioSource>();
+    }
+
     private void OnEnable()
     {
         bombRemaining = bombAmount;
@@ -31,14 +42,18 @@ public class BombController : MonoBehaviour
     {
         if (Input.GetKeyDown(inputKey))
         {
-            PlaceBomb();
+            PlacedBomb();      
         } 
     }
 
     public void PlacedBomb()
     {
         if (bombRemaining > 0)
-        StartCoroutine(PlaceBomb());
+        {
+            audioPlayer.PlayOneShot(audioPlaceBomb, 1f);
+            StartCoroutine(PlaceBomb());
+
+        }
     }
 
     private IEnumerator PlaceBomb()
@@ -87,6 +102,7 @@ public class BombController : MonoBehaviour
 
         if (Physics2D.OverlapBox(position, Vector2.one / 2f, 0f, explosionMask))
         {
+            audioPlayer.PlayOneShot(audioDestroy, 1f);
             ClearDestructible(position);
             return;
         }
